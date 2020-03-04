@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,18 +22,40 @@ import java.io.OutputStreamWriter;
 public class MainActivity extends AppCompatActivity {
 
     Context context = null;
-    TextView text;
 
-    //Button mButton;
+    TextView text;
     EditText mEdit;
     TextView mText;
+    TextView tiedostosta;
+    EditText tiedostostonimi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        EditText myTextBox = (EditText) findViewById(R.id.editText1);
+        myTextBox.addTextChangedListener(new TextWatcher() {
+
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                TextView myOutputBox = (TextView) findViewById(R.id.tuloste);
+                myOutputBox.setText(s);
+            }
+        });
+
+
         context = MainActivity.this;
         text = (TextView) findViewById(R.id.textView);
+        tiedostosta = (TextView) findViewById(R.id.textViewTiedostosta);
+        tiedostostonimi = (EditText) findViewById(R.id.tiedostoNimi);
         System.out.println(context.getFilesDir());
     }
 
@@ -40,21 +63,22 @@ public class MainActivity extends AppCompatActivity {
         text.setText("Hello World!");
     }
 
-    public void tulostaSyote(View view) {
+    public void tulostaSyote(View v) {
         mEdit   = (EditText)findViewById(R.id.editText1);
         mText = (TextView)findViewById(R.id.textView1);
         mText.setText("Syötetty teksti: "+mEdit.getText().toString());
     }
 
-
     public void readFile(View v){
         try{
-            InputStream ins = context.openFileInput("testi.txt"); //TODO Tälle arvo!
+            InputStream ins = context.openFileInput(String.valueOf(tiedostostonimi)); //TODO Tälle arvo!
 
             BufferedReader br = new BufferedReader(new InputStreamReader(ins));
+
             String s ="";
 
             while((s=br.readLine()) != null){
+                tiedostosta.setText(s);
                 System.out.println(s);
             }
             ins.close();
@@ -66,12 +90,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void writeFile(View v ){
+    public void writeFile(View v){
         try{
-            OutputStreamWriter ows = new OutputStreamWriter(context.openFileOutput("testi.txt", Context.MODE_PRIVATE));
-
+            OutputStreamWriter ows = new OutputStreamWriter(context.openFileOutput(String.valueOf(tiedostostonimi), Context.MODE_PRIVATE));
             String s = "";
-            s = "Tämä tulee tiedostoon \n Lue tiedosto jotta näet tämän \n tai sitten et näe" ;
+            mEdit = (EditText)findViewById(R.id.editText1);
+            mText = (TextView)findViewById(R.id.textView1);
+            s = (mEdit.getText().toString());
+            /*s = "Tämä tulee tiedostoon \n Lue tiedosto jotta näet tämän \n tai sitten et näe";*/
             ows.write(s);
             ows.close();
         } catch(IOException e) {
@@ -79,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
         } finally {
             System.out.println("Kirjoitettu");
         }
-
     }
 }
 
