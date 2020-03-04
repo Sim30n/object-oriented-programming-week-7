@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void testFunction(View v){
         text.setText("Hello World!");
+        System.out.println("Hello world");
     }
 
     public void tulostaSyote(View v) {
