@@ -8,12 +8,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
     EditText mEdit;
     TextView mText;
     TextView tiedostosta;
-    EditText tiedostostonimi;
-
+    EditText editTiedostonimi;
+    TextView textTiedostonimi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,12 +48,9 @@ public class MainActivity extends AppCompatActivity {
                 myOutputBox.setText(s);
             }
         });
-
-
         context = MainActivity.this;
         text = (TextView) findViewById(R.id.textView);
         tiedostosta = (TextView) findViewById(R.id.textViewTiedostosta);
-        tiedostostonimi = (EditText) findViewById(R.id.tiedostoNimi);
         System.out.println(context.getFilesDir());
     }
 
@@ -71,12 +66,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void readFile(View v){
         try{
-            InputStream ins = context.openFileInput(String.valueOf(tiedostostonimi)); //TODO Tälle arvo!
-
+            editTiedostonimi = (EditText)findViewById(R.id.editTiedostoNimi);
+            InputStream ins = context.openFileInput(editTiedostonimi.getText().toString());
             BufferedReader br = new BufferedReader(new InputStreamReader(ins));
-
             String s ="";
-
             while((s=br.readLine()) != null){
                 tiedostosta.setText(s);
                 System.out.println(s);
@@ -91,13 +84,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void writeFile(View v){
+
         try{
-            OutputStreamWriter ows = new OutputStreamWriter(context.openFileOutput(String.valueOf(tiedostostonimi), Context.MODE_PRIVATE));
+            editTiedostonimi = (EditText)findViewById(R.id.editTiedostoNimi);
+            OutputStreamWriter ows = new OutputStreamWriter(context.openFileOutput(editTiedostonimi.getText().toString(), Context.MODE_PRIVATE));
             String s = "";
             mEdit = (EditText)findViewById(R.id.editText1);
-            mText = (TextView)findViewById(R.id.textView1);
             s = (mEdit.getText().toString());
-            /*s = "Tämä tulee tiedostoon \n Lue tiedosto jotta näet tämän \n tai sitten et näe";*/
             ows.write(s);
             ows.close();
         } catch(IOException e) {
